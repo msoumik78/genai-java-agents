@@ -10,7 +10,7 @@ The model does not issue the refund. `checkRefundEligibility` only reports wheth
 
 ## Run
 
-Requires JDK 21+ and Ollama with `qwen2.5:7b`.
+Requires JDK 21+ and Ollama with `qwen2.5:7b`. The reason text can vary. The approval flag, the amount, and the tools are the checks.
 
 ```bash
 export JAVA_HOME=/Users/soumikmukherjee/softwares/jdk25/jdk-25.0.4.1.jdk/Contents/Home
@@ -18,10 +18,49 @@ mvn test
 mvn spring-boot:run
 ```
 
+### 1. Eligible order
+
+`ORD-1001` was delivered 12 days ago and paid $49.00, inside the 30-day window.
+
 ```bash
 curl -s localhost:8080/api/refund-decisions \
   -H 'content-type: application/json' \
   -d '{"orderId":"ORD-1001","customerNote":"The speaker arrived cracked"}'
 ```
 
-Sample orders: `ORD-1001` (eligible), `ORD-1002` (outside the 30-day window), `ORD-1003` (cancelled).
+Correct:
+
+- `decision.approved` is `true`
+- `decision.amount` is `49.00`
+- `schemaRepairs` is `0`
+- `toolsCalled` contains `getOrder`, `getPolicy`, and `checkRefundEligibility`
+
+Incorrect:
+
+- `approved` is `false`
+- `amount` is anything other than `49.00`
+- `toolsCalled` is empty
+
+### 2. Order outside the refund window
+
+`ORD-1002` was delivered 45 days ago. The policy window is 30 days.
+
+```bash
+curl -s localhost:8080/api/refund-decisions \
+  -H 'content-type: application/json' \
+  -d '{"orderId":"ORD-1002","customerNote":"I want a refund"}'
+```
+
+Correct:
+
+- `decision.approved` is `false`
+- `decision.amount` is `0`
+- `decision.reason` says the delivery is past the 30-day window
+- `toolsCalled` contains `getOrder`, `getPolicy`, and `checkRefundEligibility`
+
+Incorrect:
+
+- `approved` is `true`
+- `amount` is greater than `0`
+
+`ORD-1003` is cancelled. A correct decision for it is also `approved: false` and `amount: 0`.
