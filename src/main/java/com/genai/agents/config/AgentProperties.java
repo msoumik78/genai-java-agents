@@ -10,6 +10,8 @@ public record AgentProperties(
         @DefaultValue("8") int maxIterations,
         @DefaultValue("8000") int maxTotalTokens,
         @DefaultValue("3") int maxIdenticalToolCalls,
-        @DefaultValue("200") BigDecimal maxRefundAmount
+        @DefaultValue("200") BigDecimal maxRefundAmount,
+        @DefaultValue("8") int keepRecentMessages,
+        @DefaultValue("180") int toolResultMaxChars
 ) {
 }

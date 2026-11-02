@@ -46,6 +46,13 @@ public final class HarnessState {
         modelCalls++;
     }
 
+    public void restore(int modelCalls, int totalTokens, List<RailEvent> rails) {
+        this.modelCalls = modelCalls;
+        this.totalTokens = totalTokens;
+        this.rails.addAll(rails);
+        this.inputChecked = true;
+    }
+
     public int totalTokens() {
         return totalTokens;
     }

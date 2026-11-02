@@ -14,4 +14,16 @@ public class AgentExceptionHandler {
     public AgentFailure budget(RuntimeException ex) {
         return new AgentFailure("budget", ex.getMessage());
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public AgentFailure badRequest(IllegalArgumentException ex) {
+        return new AgentFailure("invalid", ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public AgentFailure conflict(IllegalStateException ex) {
+        return new AgentFailure("conflict", ex.getMessage());
+    }
 }
