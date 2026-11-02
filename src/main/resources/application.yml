@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: genai-java-agents
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      init:
+        pull-model-strategy: never
+      chat:
+        options:
+          model: qwen2.5:7b
+          temperature: 0
+
+agent:
+  max-iterations: 8
