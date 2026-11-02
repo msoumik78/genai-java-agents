@@ -10,6 +10,17 @@ spring:
         options:
           model: qwen2.5:7b
           temperature: 0
+    retry:
+      max-attempts: 1
 
 agent:
   max-iterations: 8
+  max-total-tokens: 8000
+  max-identical-tool-calls: 3
+  max-refund-amount: 200
+
+llm:
+  permits-per-second: 5
+  max-concurrent-calls: 2
+  timeout: 90s
+  retry-attempts: 2

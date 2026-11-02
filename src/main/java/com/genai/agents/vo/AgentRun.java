@@ -6,6 +6,8 @@ public record AgentRun(
         RefundDecision decision,
         int modelCalls,
         int schemaRepairs,
-        List<String> toolsCalled
+        List<String> toolsCalled,
+        List<RailEvent> railsFired,
+        int totalTokens
 ) {
 }
