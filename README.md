@@ -14,6 +14,23 @@
 - **Approval.** A proposed refund above zero pauses as `AWAITING_APPROVAL`. Approve, reject, or edit the amount. The refund is issued only after that.
 - **Idempotent issue.** Approving the same thread again returns the original receipt and does not write a second refund.
 - **Compaction.** Long threads keep pinned facts (`ORD-…`, `PIN:` lines, tool names), truncate tool results, and replace older turns with a summary plus a sliding window.
+- **Traces.** Each model call is a `chat` span and each tool call is an `execute_tool` span. Attributes follow the GenAI names: `gen_ai.operation.name`, `gen_ai.system`, `gen_ai.request.model`, `gen_ai.tool.name`, and token counts when the model reports them.
+- **Eval gate.** `mvn test` runs a golden set. The build fails if `getOrder`, `getPolicy`, and `checkRefundEligibility` are missing or out of order. A rubric judge score is printed beside that pass or fail. It does not decide the build.
+- **Prompt change.** Replacing the tool instruction with “do not use tools” drops the judge score from `1.0` to `0.0`.
+
+### Eval output
+
+`mvn test` prints:
+
+```
+EVAL case=ORD-1001 trajectory=PASS judge=1.0
+EVAL case=ORD-1002 trajectory=PASS judge=1.0
+EVAL gate=PASS judgeAverage=1.0
+EVAL prompt=baseline judge=1.0
+EVAL prompt=changed judge=0.0
+```
+
+Incorrect: `trajectory=FAIL` on `ORD-1001` or `ORD-1002`, or the changed prompt scoring as high as the baseline.
 
 ## Run
 
